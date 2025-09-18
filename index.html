@@ -58,6 +58,21 @@
     grid-template-rows: 1fr 1fr;
     overflow: hidden;
   }
+.card::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 6px;                      /* grosor del blend */
+  transform: translateY(-50%);
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,.11),
+    rgba(0,0,0,.45)
+  );
+  pointer-events: none;
+}
+
+
   .top, .bottom, .flip-front, .flip-back {
     display: grid;
     place-items: center;
