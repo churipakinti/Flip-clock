@@ -5,42 +5,66 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Flip Clock</title>
 <style>
-  :root { --bg:#0f1115; --card:#1a1f2b; --fg:#eaf0ff; --accent:#3ea6ff; --shadow:rgba(0,0,0,.5); }
+  :root { 
+    --bg:#0f1115; 
+    --card:#1a1f2b; 
+    --fg:#eaf0ff; 
+    --accent:#3ea6ff; 
+    --shadow:rgba(0,0,0,.5); 
+  }
   * { box-sizing: border-box; }
   body {
-    margin: 0; min-height: 100vh; display: grid; place-items: center;
+    margin: 0; 
+    min-height: 100vh; 
+    display: grid; 
+    place-items: center;
     background: radial-gradient(1000px 600px at 50% 20%, #141826, #0f1115);
-    color: var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    color: var(--fg); 
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
   }
-  .clock { display: flex; gap: 1.2rem; align-items: center; }
-  .sep { font-weight: 700; font-size: clamp(18px, 4vw, 28px); opacity: .75; margin: 0 .3rem; }
-  .group { display: flex; gap: .6rem; }
- .digit {
-  position: relative;
-  width: 480px;       /* ancho grande */
-  height: 400px;      /* alto grande */
-  perspective: 1500px;
-}
 
-.card {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(#222a3a, var(--card));
-  border-radius: 16px;   /* bordes un poco más redondeados */
-  box-shadow: 0 16px 40px var(--shadow), inset 0 -2px 0 rgba(255,255,255,.08);
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  overflow: hidden;
-}
+  .clock { 
+    display: flex; 
+    gap: clamp(.6rem, 2vmin, 1.6rem); 
+    align-items: center;
+    flex-wrap: wrap; 
+    justify-content: center;
+  }
+  .sep { 
+    font-weight: 700; 
+    font-size: clamp(18px, 4vw, 28px); 
+    opacity: .75; 
+    margin: 0 .3rem; 
+  }
+  .group { 
+    display: flex; 
+    gap: clamp(.3rem, 1.2vmin, .8rem); 
+  }
 
-.top, .bottom, .flip-front, .flip-back {
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-  font-size: 240px;      /* tamaño del número */
-  letter-spacing: .01em; /* menos separación */
-}
-
+  /* --- Tarjetas dinámicas --- */
+  .digit {
+    position: relative;
+    width:  clamp(450px, 14vmin, 400px);
+    height: clamp(700px, 20vmin, 1000px);
+    perspective: 1200px;
+  }
+  .card {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(#222a3a, var(--card));
+    border-radius: 16px;
+    box-shadow: 0 16px 40px var(--shadow), inset 0 -2px 0 rgba(255,255,255,.08);
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    overflow: hidden;
+  }
+  .top, .bottom, .flip-front, .flip-back {
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: clamp(480px, 12vmin, 160px);
+    letter-spacing: .01em;
+  }
   .top, .flip-front { border-bottom: 1px solid rgba(255,255,255,.08); }
   .bottom, .flip-back  { border-top: 1px solid rgba(0,0,0,.35); }
   .top, .flip-front { background: linear-gradient(#2a3246, #1e2433); }
@@ -54,8 +78,8 @@
     position: absolute; left: 0; right: 0; height: 50%;
     backface-visibility: hidden; transform-origin: center bottom;
   }
-  .flip-front { top: 0; border-radius: 12px 12px 0 0; }
-  .flip-back  { bottom: 0; transform-origin: center top; border-radius: 0 0 12px 12px; }
+  .flip-front { top: 0; border-radius: 16px 16px 0 0; }
+  .flip-back  { bottom: 0; transform-origin: center top; border-radius: 0 0 16px 16px; }
   .animate .flip-front {
     animation: flipFront 420ms cubic-bezier(.19,.64,.34,1.17);
   }
@@ -71,8 +95,13 @@
     100% { transform: rotateX(0deg); }
   }
 
-  /* tiny label under each pair */
-  .label { text-align: center; font-size: .75rem; opacity: .7; margin-top: .35rem; font-weight: 600; }
+  .label { 
+    text-align: center; 
+    font-size: clamp(.65rem, 1.8vmin, .9rem); 
+    opacity: .7; 
+    margin-top: .35rem; 
+    font-weight: 600; 
+  }
   .stack { display: grid; justify-items: center; }
 </style>
 </head>
@@ -104,7 +133,6 @@
   </div>
 
 <script>
-  // Build static halves for a digit (top/bottom showing current value)
   function buildCard(value) {
     const card = document.createElement('div');
     card.className = 'card';
@@ -114,7 +142,6 @@
     return card;
   }
 
-  // Animate flip from old -> new inside a .digit
   function flipTo(digitEl, newValue) {
     const oldValue = digitEl.getAttribute('data-value');
     if (String(oldValue) === String(newValue)) return;
@@ -143,7 +170,6 @@
     }, { once: true });
   }
 
-  // Initialize all digits to 0 cards
   document.querySelectorAll('.digit').forEach(d => {
     d.appendChild(buildCard('0'));
   });
@@ -166,7 +192,6 @@
     });
   }
 
-  // First tick immediately, then every second
   tick();
   setInterval(tick, 1000);
 </script>
