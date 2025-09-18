@@ -1,126 +1,127 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Flip Clock</title>
+<title>Flip Clock Responsive + Drama</title>
 <style>
-  :root { 
-    --bg:#0f1115; 
-    --card:#1a1f2b; 
-    --fg:#eaf0ff; 
-    --accent:#3ea6ff; 
-    --shadow:rgba(0,0,0,.5); 
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; 
-    min-height: 100vh; 
-    display: grid; 
-    place-items: center;
-    background: radial-gradient(1000px 600px at 50% 20%, #141826, #0f1115);
-    color: var(--fg); 
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+  /* ===== Control único de tamaño ===== */
+  :root{
+    /* cambia esto si quieres todo más grande/pequeño por defecto */
+    --u: clamp(44px, min(12vmin, 10vw), 120px);
+
+    --bg:#0f1115; --card:#1a1f2b; --fg:#eaf0ff; --shadow:rgba(0,0,0,.5);
+    --accent:#ff4a4a;
   }
 
-  .clock { 
-    display: flex; 
-    gap: clamp(.6rem, 2vmin, 1.6rem); 
-    align-items: center;
-    flex-wrap: wrap; 
-    justify-content: center;
-  }
-  .sep { 
-    font-weight: 700; 
-    font-size: clamp(18px, 4vw, 28px); 
-    opacity: .75; 
-    margin: 0 .3rem; 
-  }
-  .group { 
-    display: flex; 
-    gap: clamp(.3rem, 1.2vmin, .8rem); 
+  *{ box-sizing:border-box }
+  body{
+    margin:0; min-height:100vh; display:grid; place-items:center;
+    gap: calc(var(--u)*.35);
+    background: radial-gradient(1000px 600px at 50% 20%, #141826, var(--bg));
+    color:var(--fg);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    padding: calc(var(--u)*.25);
   }
 
-  /* --- Tarjetas dinámicas --- */
-  .digit {
-    position: relative;
-    width:  clamp(450px, 14vmin, 400px);
-    height: clamp(700px, 20vmin, 1000px);
+  /* ===== Título dinámico (arriba) ===== */
+  .title{
+    text-align:center;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color: var(--accent);
+    text-shadow: 0 0 15px #ff0000, 0 0 40px #ff0000, 0 0 80px #ff0000;
+    font-size: clamp(28px, 7vmin, 80px);
+    line-height: 1.1;
+  }
+
+  .clock{
+    display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
+    gap: calc(var(--u)*.25);
+    padding: calc(var(--u)*.2);
+  }
+  .group{ display:flex; gap: calc(var(--u)*.15); }
+  .sep{ font-weight:700; opacity:.75; margin:0 .3rem;
+        font-size: calc(var(--u)*.45); }
+
+  /* ========== Tarjetas ========== */
+  .digit{
+    position:relative;
+    width:  calc(var(--u)*1.6);
+    height: calc(var(--u)*2.0);
     perspective: 1200px;
   }
-  .card {
-    position: absolute;
-    inset: 0;
+  .card{
+    position:absolute; inset:0; overflow:hidden;
     background: linear-gradient(#222a3a, var(--card));
-    border-radius: 16px;
-    box-shadow: 0 16px 40px var(--shadow), inset 0 -2px 0 rgba(255,255,255,.08);
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    overflow: hidden;
-  }
-.card::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; top: 50%;
-  height: 6px;                      /* grosor del blend */
-  transform: translateY(-50%);
-  background: linear-gradient(
-    to bottom,
-    rgba(255,255,255,.11),
-    rgba(0,0,0,.45)
-  );
-  pointer-events: none;
-}
-
-
-  .top, .bottom, .flip-front, .flip-back {
-    display: grid;
-    place-items: center;
-    font-weight: 800;
-    font-size: clamp(480px, 12vmin, 160px);
-    letter-spacing: .01em;
-  }
-  .top, .flip-front { border-bottom: 1px solid rgba(255,255,255,.08); }
-  .bottom, .flip-back  { border-top: 1px solid rgba(0,0,0,.35); }
-  .top, .flip-front { background: linear-gradient(#2a3246, #1e2433); }
-  .bottom, .flip-back { background: linear-gradient(#1c2231, #171c29); }
-
-  /* flipping piece */
-  .flipper {
-    position: absolute; inset: 0; pointer-events: none; perspective: 1000px;
-  }
-  .flip-front, .flip-back {
-    position: absolute; left: 0; right: 0; height: 50%;
-    backface-visibility: hidden; transform-origin: center bottom;
-  }
-  .flip-front { top: 0; border-radius: 16px 16px 0 0; }
-  .flip-back  { bottom: 0; transform-origin: center top; border-radius: 0 0 16px 16px; }
-  .animate .flip-front {
-    animation: flipFront 420ms cubic-bezier(.19,.64,.34,1.17);
-  }
-  .animate .flip-back {
-    animation: flipBack 420ms cubic-bezier(.19,.64,.34,1.17);
-  }
-  @keyframes flipFront {
-    0% { transform: rotateX(0deg); }
-    100% { transform: rotateX(-90deg); }
-  }
-  @keyframes flipBack {
-    0% { transform: rotateX(90deg); }
-    100% { transform: rotateX(0deg); }
+    border-radius: calc(var(--u)*.18);
+    box-shadow: 0 calc(var(--u)*.12) calc(var(--u)*.3) var(--shadow),
+                inset 0 -2px 0 rgba(255,255,255,.08);
+    display:grid; grid-template-rows:1fr 1fr;
   }
 
-  .label { 
-    text-align: center; 
-    font-size: clamp(.65rem, 1.8vmin, .9rem); 
-    opacity: .7; 
-    margin-top: .35rem; 
-    font-weight: 600; 
+  /* Línea central permanente tipo tarjeta */
+  .card::after{
+    content:""; position:absolute; left:0; right:0; top:50%;
+    transform:translateY(-50%);
+    height: 4px;
+    background: linear-gradient(to bottom, rgba(255,255,255,.10), rgba(0,0,0,.45));
+    pointer-events:none;
   }
-  .stack { display: grid; justify-items: center; }
+
+  .top, .bottom, .flip-front, .flip-back{
+    display:grid; place-items:center; font-weight:800; letter-spacing:.01em;
+    font-size: calc(var(--u)*1.3);
+  }
+  .top, .flip-front { border-bottom: 1px solid rgba(255,255,255,.08);
+                      background: linear-gradient(#2a3246, #1e2433); }
+  .bottom, .flip-back{ border-top: 1px solid rgba(0,0,0,.35);
+                       background: linear-gradient(#1c2231, #171c29); }
+
+  /* flipping */
+  .flipper{ position:absolute; inset:0; pointer-events:none; perspective:1000px; }
+  .flip-front, .flip-back{
+    position:absolute; left:0; right:0; height:50%;
+    backface-visibility:hidden; transform-origin:center bottom;
+  }
+  .flip-front{ top:0; border-radius: calc(var(--u)*.18) calc(var(--u)*.18) 0 0; }
+  .flip-back { bottom:0; transform-origin:center top;
+               border-radius: 0 0 calc(var(--u)*.18) calc(var(--u)*.18); }
+  .animate .flip-front{ animation: flipFront 420ms cubic-bezier(.19,.64,.34,1.17); }
+  .animate .flip-back { animation: flipBack 420ms cubic-bezier(.19,.64,.34,1.17); }
+  @keyframes flipFront{ 0%{transform:rotateX(0)} 100%{transform:rotateX(-90deg)} }
+  @keyframes flipBack { 0%{transform:rotateX(90deg)} 100%{transform:rotateX(0)} }
+
+  .stack{ display:grid; justify-items:center; }
+  .label{
+    margin-top: calc(var(--u)*.12);
+    font-weight:600; opacity:.7;
+    font-size: calc(var(--u)*.32);
+  }
+
+  /* ===== Pie dramático (abajo) ===== */
+  .footer{
+    text-align:center;
+    font-weight:700;
+    color: var(--accent);
+    font-size: clamp(18px, 3vmin, 36px);
+    animation: blink 1.5s infinite;
+    letter-spacing:.05em;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* Salvavidas para pantallas muy estrechas */
+  @media (max-width: 520px){
+    :root{ --u: clamp(36px, min(16vmin, 22vw), 96px); }
+  }
 </style>
 </head>
 <body>
+  <!-- Título dinámico -->
+  <div id="title" class="title">Calculando el fin del mundo…</div>
+
+  <!-- Reloj -->
   <div class="clock" id="clock">
     <div class="stack">
       <div class="group" data-label="HOURS">
@@ -147,8 +148,16 @@
     </div>
   </div>
 
+  <!-- Pie dramático -->
+  <div class="footer">El tiempo se acaba…</div>
+
 <script>
-  function buildCard(value) {
+  /* ===== Configuración del “fin del mundo” =====
+     Cambia esta fecha a lo que quieras. ISO es lo más seguro. */
+  const APOCALYPSE_AT = new Date("2026-01-01T00:00:00");
+
+  // Construye tarjeta estática
+  function buildCard(value){
     const card = document.createElement('div');
     card.className = 'card';
     const top = document.createElement('div'); top.className = 'top'; top.textContent = value;
@@ -157,7 +166,8 @@
     return card;
   }
 
-  function flipTo(digitEl, newValue) {
+  // Flip animado
+  function flipTo(digitEl, newValue){
     const oldValue = digitEl.getAttribute('data-value');
     if (String(oldValue) === String(newValue)) return;
 
@@ -167,13 +177,8 @@
     const flipper = document.createElement('div');
     flipper.className = 'flipper animate';
 
-    const front = document.createElement('div');
-    front.className = 'flip-front';
-    front.textContent = oldValue;
-
-    const back = document.createElement('div');
-    back.className = 'flip-back';
-    back.textContent = newValue;
+    const front = document.createElement('div'); front.className = 'flip-front'; front.textContent = oldValue;
+    const back  = document.createElement('div'); back.className  = 'flip-back';  back.textContent  = newValue;
 
     flipper.append(front, back);
     digitEl.appendChild(flipper);
@@ -182,33 +187,51 @@
       digitEl.innerHTML = '';
       digitEl.appendChild(buildCard(newValue));
       digitEl.setAttribute('data-value', newValue);
-    }, { once: true });
+    }, { once:true });
   }
 
-  document.querySelectorAll('.digit').forEach(d => {
-    d.appendChild(buildCard('0'));
-  });
+  // Init de tarjetas
+  document.querySelectorAll('.digit').forEach(d => d.appendChild(buildCard('0')));
+  const pad2 = n => n < 10 ? '0'+n : ''+n;
 
-  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
-
-  function tick() {
+  // Reloj hh:mm:ss
+  function tick(){
     const now = new Date();
-    const h = pad2(now.getHours());
-    const m = pad2(now.getMinutes());
-    const s = pad2(now.getSeconds());
-
-    const groups = document.querySelectorAll('.group');
-    const sets = [h, m, s];
-
-    sets.forEach((str, gi) => {
-      const digits = groups[gi].querySelectorAll('.digit');
-      flipTo(digits[0], str[0]);
-      flipTo(digits[1], str[1]);
+    const sets = [pad2(now.getHours()), pad2(now.getMinutes()), pad2(now.getSeconds())];
+    document.querySelectorAll('.group').forEach((g, i) => {
+      const digits = g.querySelectorAll('.digit');
+      flipTo(digits[0], sets[i][0]);
+      flipTo(digits[1], sets[i][1]);
     });
   }
 
-  tick();
+  // Título dinámico: “Faltan X días, Y horas y Z minutos…”
+  function updateTitle(){
+    const now = new Date();
+    const diff = APOCALYPSE_AT - now;
+
+    const titleEl = document.getElementById("title");
+
+    if (diff <= 0){
+      titleEl.textContent = "El fin ha llegado.";
+      return;
+    }
+    const days  = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff / (1000*60*60)) % 24);
+    const mins  = Math.floor((diff / (1000*60)) % 60);
+
+    // pequeñas mejoras gramaticales
+    const dTxt = days === 1 ? "día" : "días";
+    const hTxt = hours === 1 ? "hora" : "horas";
+    const mTxt = mins === 1 ? "minuto" : "minutos";
+
+    titleEl.textContent = `Faltan ${days} ${dTxt}, ${hours} ${hTxt} y ${mins} ${mTxt}…`;
+  }
+
+  // Arranque
+  tick(); updateTitle();
   setInterval(tick, 1000);
+  setInterval(updateTitle, 30_000); // el título no necesita refrescarse cada segundo
 </script>
 </body>
 </html>
