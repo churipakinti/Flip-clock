@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Reloj para el fin del mundo</title>
+  <title>Fin del mundo</title>
   <link rel="icon" type="image/png" href="favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+
 
   <style>
     :root{
@@ -51,16 +53,21 @@
     }
 
     /* ===== Título fijo ===== */
-    .title{
-      font-weight:900;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      color: var(--accent);
-      text-shadow: 0 0 6px rgba(255,0,0,0.6), 0 0 12px rgba(255,0,0,0.4);
-      font-size: clamp(28px, 6vmin, 60px);
-      line-height:1.1;
-      margin-top: 1rem;
-    }
+    .title {
+     font-family: 'Gloria Hallelujah', cursive; /* estilo manuscrito */
+     font-size: clamp(32px, 7vmin, 80px);
+     color: #ddd;
+     text-transform: uppercase;
+     letter-spacing: .05em;
+     /* Sombras múltiples difusas simulando polvo de tiza */
+     text-shadow:
+     1px 1px 2px rgba(255,255,255,0.6),
+    -1px -1px 2px rgba(255,255,255,0.5),
+     2px -2px 3px rgba(255,255,255,0.4),
+    -2px  2px 3px rgba(255,255,255,0.4),
+     0 0 6px rgba(255,255,255,0.3);
+}
+
 
     /* Contenedor inferior (reloj + footer) */
     .bottom-wrap{
@@ -89,10 +96,10 @@
     }
     .card{
       position:absolute; inset:0; overflow:hidden;
-      background: #1a1f2b;
+      background: #333;
       border-radius: calc(var(--u)*.18);
       box-shadow: 0 calc(var(--u)*.12) calc(var(--u)*.3) rgba(0,0,0,.5),
-                  inset 0 -2px 0 rgba(255,255,255,.08);
+                  inset 0 -2px 0 rgba(255,255,255,.01);
       display:grid; grid-template-rows:1fr 1fr;
     }
     .card::after{
@@ -106,8 +113,8 @@
       display:grid; place-items:center; font-weight:800; letter-spacing:.01em;
       font-size: calc(var(--u)*1);
     }
-    .top, .flip-front { border-bottom: 1px solid rgba(255,255,255,.08); background:#2a3246; }
-    .bottom, .flip-back{ border-top: 1px solid rgba(0,0,0,.35); background:#171c29; }
+    .top, .flip-front { border-bottom: 1px solid rgba(255,255,255,.08); background:#444; }
+    .bottom, .flip-back{ border-top: 1px solid rgba(0,0,0,.35); background:#222; }
 
     .flipper{ position:absolute; inset:0; pointer-events:none; perspective:1000px; }
     .flip-front, .flip-back{
@@ -125,6 +132,7 @@
     .stack{ display:grid; justify-items:center; }
     .label{
       margin-top: calc(var(--u)*.12);
+      font-family: 'Gloria Hallelujah', cursive;
       font-weight:600; opacity:.7;
       font-size: calc(var(--u)*.32);
     }
@@ -133,6 +141,7 @@
     .footer{
       font-weight:700;
       color: #FFFFFF;
+      font-family: 'Gloria Hallelujah', cursive;
       font-size: clamp(12px, 3vmin, 12px);
       animation: blink 0s infinite;
       letter-spacing:.05em;
@@ -148,7 +157,7 @@
   <div class="overlay"></div>
 
   <!-- Título -->
-  <div class="title">Reloj para el fin del mundo</div>
+  <div class="title">Fin del mundo</div>
 
   <!-- Contenedor inferior (reloj + footer) -->
   <div class="bottom-wrap">
@@ -159,7 +168,7 @@
           <div class="digit" data-value="0"></div>
           <div class="digit" data-value="0"></div>
         </div>
-        <div class="label">HOURS</div>
+        <div class="label">horas</div>
       </div>
       <div class="sep">:</div>
       <div class="stack">
@@ -167,7 +176,7 @@
           <div class="digit" data-value="0"></div>
           <div class="digit" data-value="0"></div>
         </div>
-        <div class="label">MINUTES</div>
+        <div class="label">minutos</div>
       </div>
       <div class="sep">:</div>
       <div class="stack">
@@ -175,7 +184,7 @@
           <div class="digit" data-value="0"></div>
           <div class="digit" data-value="0"></div>
         </div>
-        <div class="label">SECONDS</div>
+        <div class="label">segundos</div>
       </div>
     </div>
 
@@ -247,4 +256,3 @@
 </script>
 </body>
 </html>
-
