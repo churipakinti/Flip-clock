@@ -13,28 +13,33 @@
       --accent:#FFFFFF;
     }
     *{ box-sizing:border-box; margin:0; padding:0; }
+
+    /* Layout: título arriba, reloj+footer abajo */
     body{
       min-height:100vh;
-      display:grid;
-      place-items:center;
-      gap: calc(var(--u)*.35);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      align-items:center;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color: var(--fg);
       text-align: center;
       overflow:hidden;
+      background-color: #000;
     }
 
     /* ===== Video de fondo ===== */
     #bg-video {
       position: fixed;
-      right: 1;
-      bottom: 1;
-      min-width: 100%;
-      min-height: 100%;
+      top: 44%;
+      left: 50%;
+      width:100%;
+      height:100%;
       object-fit: cover;
-      object-position: center;  /* centra el recorte */
+      object-position: center;
       z-index: -2;
-      filter: invert(1); /* 👈 filtro para invertir colores */
+      filter: invert(1);
+      transform: translate(-50%, -50%) scale(0.75);
     }
 
     /* Overlay oscuro para contraste */
@@ -54,6 +59,16 @@
       text-shadow: 0 0 6px rgba(255,0,0,0.6), 0 0 12px rgba(255,0,0,0.4);
       font-size: clamp(28px, 6vmin, 70px);
       line-height:1.1;
+      margin-top: 1rem;
+    }
+
+    /* Contenedor inferior (reloj + footer) */
+    .bottom-wrap{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      margin-bottom: 2rem; /* ajusta distancia al borde inferior */
+      gap: .75rem;
     }
 
     /* ===== Reloj ===== */
@@ -68,8 +83,8 @@
 
     .digit{
       position:relative;
-      width:  calc(var(--u)*1.6);
-      height: calc(var(--u)*2.0);
+      width:  calc(var(--u)*1);
+      height: calc(var(--u)*1.5);
       perspective: 1200px;
     }
     .card{
@@ -89,7 +104,7 @@
     }
     .top, .bottom, .flip-front, .flip-back{
       display:grid; place-items:center; font-weight:800; letter-spacing:.01em;
-      font-size: calc(var(--u)*1.2);
+      font-size: calc(var(--u)*1);
     }
     .top, .flip-front { border-bottom: 1px solid rgba(255,255,255,.08); background:#2a3246; }
     .bottom, .flip-back{ border-top: 1px solid rgba(0,0,0,.35); background:#171c29; }
@@ -118,7 +133,7 @@
     .footer{
       font-weight:700;
       color: #FFFFFF;
-      font-size: clamp(18px, 3vmin, 18px);
+      font-size: clamp(12px, 3vmin, 12px);
       animation: blink 0s infinite;
       letter-spacing:.05em;
     }
@@ -135,35 +150,38 @@
   <!-- Título -->
   <div class="title">Reloj para el fin del mundo</div>
 
-  <!-- Reloj -->
-  <div class="clock" id="clock">
-    <div class="stack">
-      <div class="group" data-label="HOURS">
-        <div class="digit" data-value="0"></div>
-        <div class="digit" data-value="0"></div>
+  <!-- Contenedor inferior (reloj + footer) -->
+  <div class="bottom-wrap">
+    <!-- Reloj (ÚNICO clock con ID único) -->
+    <div class="clock" id="clock">
+      <div class="stack">
+        <div class="group" data-label="HOURS">
+          <div class="digit" data-value="0"></div>
+          <div class="digit" data-value="0"></div>
+        </div>
+        <div class="label">HOURS</div>
       </div>
-      <div class="label">HOURS</div>
-    </div>
-    <div class="sep">:</div>
-    <div class="stack">
-      <div class="group" data-label="MINUTES">
-        <div class="digit" data-value="0"></div>
-        <div class="digit" data-value="0"></div>
+      <div class="sep">:</div>
+      <div class="stack">
+        <div class="group" data-label="MINUTES">
+          <div class="digit" data-value="0"></div>
+          <div class="digit" data-value="0"></div>
+        </div>
+        <div class="label">MINUTES</div>
       </div>
-      <div class="label">MINUTES</div>
-    </div>
-    <div class="sep">:</div>
-    <div class="stack">
-      <div class="group" data-label="SECONDS">
-        <div class="digit" data-value="0"></div>
-        <div class="digit" data-value="0"></div>
+      <div class="sep">:</div>
+      <div class="stack">
+        <div class="group" data-label="SECONDS">
+          <div class="digit" data-value="0"></div>
+          <div class="digit" data-value="0"></div>
+        </div>
+        <div class="label">SECONDS</div>
       </div>
-      <div class="label">SECONDS</div>
     </div>
-  </div>
 
-  <!-- Footer -->
-  <div id="footer" class="footer">Calculando…</div>
+    <!-- Footer (ÚNICO footer con ID único) -->
+    <div id="footer" class="footer">Calculando…</div>
+  </div>
 
 <script>
   const APOCALYPSE_AT = new Date("2030-01-01T00:00:00");
