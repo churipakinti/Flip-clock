@@ -1,116 +1,138 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Reloj para el fin del mundo</title>
-<style>
-  :root{
-    --u: clamp(44px, min(12vmin, 10vw), 120px);
-    --bg:#0f1115; --card:#1a1f2b; --fg:#eaf0ff;
-    --shadow:rgba(0,0,0,.5); --accent:#ff4a4a;
-  }
-  *{ box-sizing:border-box }
-  body{
-    margin:0; min-height:100vh; display:grid; place-items:center;
-    gap: calc(var(--u)*.35);
-    background: radial-gradient(1000px 600px at 50% 20%, #141826, var(--bg));
-    color:var(--fg);
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-    padding: calc(var(--u)*.25);
-  }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reloj para el fin del mundo</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
-  /* ===== Título fijo (arriba) ===== */
-  .title{
-    text-align:center;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    color: #ffffff; /* texto blanco puro */
-    text-shadow: 0 0 6px rgba(255, 0, 0, 0.6),
-               0 0 12px rgba(255, 0, 0, 0.4);
-    font-size: clamp(28px, 6vmin, 70px);
-    line-height:1.0;
-  }
+  <style>
+    :root{
+      --u: clamp(44px, min(12vmin, 10vw), 120px);
+      --fg:#eaf0ff;
+      --accent:#ff4a4a;
+    }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      gap: calc(var(--u)*.35);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color: var(--fg);
+      text-align: center;
+      overflow:hidden;
+    }
 
-  .clock{
-    display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
-    gap: calc(var(--u)*.25);
-    padding: calc(var(--u)*.2);
-  }
-  .group{ display:flex; gap: calc(var(--u)*.15); }
-  .sep{ font-weight:700; opacity:.75; margin:0 .3rem;
-        font-size: calc(var(--u)*.45); }
+    /* ===== Video de fondo ===== */
+    #bg-video {
+      position: fixed;
+      right: 1;
+      bottom: 1;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      object-position: center;  /* centra el recorte */
+      z-index: -2;
+      filter: invert(1); /* 👈 filtro para invertir colores */
+    }
 
-  /* ========== Tarjetas ========== */
-  .digit{
-    position:relative;
-    width:  calc(var(--u)*1.6);
-    height: calc(var(--u)*2.0);
-    perspective: 1200px;
-  }
-  .card{
-    position:absolute; inset:0; overflow:hidden;
-    background: linear-gradient(#222a3a, var(--card));
-    border-radius: calc(var(--u)*.18);
-    box-shadow: 0 calc(var(--u)*.12) calc(var(--u)*.3) var(--shadow),
-                inset 0 -2px 0 rgba(255,255,255,.08);
-    display:grid; grid-template-rows:1fr 1fr;
-  }
-  .card::after{
-    content:""; position:absolute; left:0; right:0; top:50%;
-    transform:translateY(-50%);
-    height: 5px;
-    background: linear-gradient(to bottom, rgba(255,255,255,.10), rgba(0,0,0,.45));
-    pointer-events:none;
-  }
-  .top, .bottom, .flip-front, .flip-back{
-    display:grid; place-items:center; font-weight:800; letter-spacing:.01em;
-    font-size: calc(var(--u)*1.5);
-  }
-  .top, .flip-front { border-bottom: 1px solid rgba(255,255,255,.08);
-                      background: linear-gradient(#2a3246, #1e2433); }
-  .bottom, .flip-back{ border-top: 1px solid rgba(0,0,0,.35);
-                       background: linear-gradient(#1c2231, #171c29); }
+    /* Overlay oscuro para contraste */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: -1;
+    }
 
-  .flipper{ position:absolute; inset:0; pointer-events:none; perspective:1000px; }
-  .flip-front, .flip-back{
-    position:absolute; left:0; right:0; height:50%;
-    backface-visibility:hidden; transform-origin:center bottom;
-  }
-  .flip-front{ top:0; border-radius: calc(var(--u)*.18) calc(var(--u)*.18) 0 0; }
-  .flip-back { bottom:0; transform-origin:center top;
-               border-radius: 0 0 calc(var(--u)*.18) calc(var(--u)*.18); }
-  .animate .flip-front{ animation: flipFront 420ms cubic-bezier(.19,.64,.34,1.17); }
-  .animate .flip-back { animation: flipBack 420ms cubic-bezier(.19,.64,.34,1.17); }
-  @keyframes flipFront{ 0%{transform:rotateX(0)} 100%{transform:rotateX(-90deg)} }
-  @keyframes flipBack { 0%{transform:rotateX(90deg)} 100%{transform:rotateX(0)} }
+    /* ===== Título fijo ===== */
+    .title{
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color: var(--accent);
+      text-shadow: 0 0 6px rgba(255,0,0,0.6), 0 0 12px rgba(255,0,0,0.4);
+      font-size: clamp(28px, 6vmin, 70px);
+      line-height:1.1;
+    }
 
-  .stack{ display:grid; justify-items:center; }
-  .label{
-    margin-top: calc(var(--u)*.12);
-    font-weight:600; opacity:.7;
-    font-size: calc(var(--u)*.32);
-  }
+    /* ===== Reloj ===== */
+    .clock{
+      display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
+      gap: calc(var(--u)*.25);
+      padding: calc(var(--u)*.2);
+    }
+    .group{ display:flex; gap: calc(var(--u)*.15); }
+    .sep{ font-weight:700; opacity:.75; margin:0 .3rem;
+          font-size: calc(var(--u)*.45); }
 
-  /* ===== Pie dinámico (abajo) ===== */
-  .footer{
-    text-align:right;
-    font-weight:700;
-    color: #ffffff;
-    font-size: clamp(12px, 3vmin, 16px);
-    animation: blink 2s infinite;
-    letter-spacing:.05em;
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .digit{
+      position:relative;
+      width:  calc(var(--u)*1.6);
+      height: calc(var(--u)*2.0);
+      perspective: 1200px;
+    }
+    .card{
+      position:absolute; inset:0; overflow:hidden;
+      background: #1a1f2b;
+      border-radius: calc(var(--u)*.18);
+      box-shadow: 0 calc(var(--u)*.12) calc(var(--u)*.3) rgba(0,0,0,.5),
+                  inset 0 -2px 0 rgba(255,255,255,.08);
+      display:grid; grid-template-rows:1fr 1fr;
+    }
+    .card::after{
+      content:""; position:absolute; left:0; right:0; top:50%;
+      transform:translateY(-50%);
+      height: 3px;
+      background: linear-gradient(to bottom, rgba(255,255,255,.10), rgba(0,0,0,.45));
+      pointer-events:none;
+    }
+    .top, .bottom, .flip-front, .flip-back{
+      display:grid; place-items:center; font-weight:800; letter-spacing:.01em;
+      font-size: calc(var(--u)*1.2);
+    }
+    .top, .flip-front { border-bottom: 1px solid rgba(255,255,255,.08); background:#2a3246; }
+    .bottom, .flip-back{ border-top: 1px solid rgba(0,0,0,.35); background:#171c29; }
 
-  @media (max-width: 520px){
-    :root{ --u: clamp(36px, min(16vmin, 22vw), 96px); }
-  }
-</style>
+    .flipper{ position:absolute; inset:0; pointer-events:none; perspective:1000px; }
+    .flip-front, .flip-back{
+      position:absolute; left:0; right:0; height:50%;
+      backface-visibility:hidden; transform-origin:center bottom;
+    }
+    .flip-front{ top:0; border-radius: calc(var(--u)*.18) calc(var(--u)*.18) 0 0; }
+    .flip-back { bottom:0; transform-origin:center top;
+                 border-radius: 0 0 calc(var(--u)*.18) calc(var(--u)*.18); }
+    .animate .flip-front{ animation: flipFront 420ms cubic-bezier(.19,.64,.34,1.17); }
+    .animate .flip-back { animation: flipBack 420ms cubic-bezier(.19,.64,.34,1.17); }
+    @keyframes flipFront{ 0%{transform:rotateX(0)} 100%{transform:rotateX(-90deg)} }
+    @keyframes flipBack { 0%{transform:rotateX(90deg)} 100%{transform:rotateX(0)} }
+
+    .stack{ display:grid; justify-items:center; }
+    .label{
+      margin-top: calc(var(--u)*.12);
+      font-weight:600; opacity:.7;
+      font-size: calc(var(--u)*.32);
+    }
+
+    /* ===== Footer dinámico ===== */
+    .footer{
+      font-weight:700;
+      color: var(--accent);
+      font-size: clamp(18px, 3vmin, 36px);
+      animation: blink 1.5s infinite;
+      letter-spacing:.05em;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+  </style>
 </head>
 <body>
-  <!-- Título fijo -->
+  <!-- Video de fondo -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="apocalipsis.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
+
+  <!-- Título -->
   <div class="title">Reloj para el fin del mundo</div>
 
   <!-- Reloj -->
@@ -140,11 +162,11 @@
     </div>
   </div>
 
-  <!-- Pie dinámico -->
+  <!-- Footer -->
   <div id="footer" class="footer">Calculando…</div>
 
 <script>
-  const APOCALYPSE_AT = new Date("2026-01-01T00:00:00");
+  const APOCALYPSE_AT = new Date("2030-01-01T00:00:00");
 
   function buildCard(value){
     const card = document.createElement('div');
